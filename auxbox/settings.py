@@ -16,11 +16,10 @@ SECRET_KEY = '=w@ualtox7^w203!+^inc*f8z+#e3*2zs7%vjv4qw0rqc$yy@0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
-TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = [
     u'auxbox-backend.herokuapp.com',
-    u'localhost:8000'
+    u'localhost'
 ]
 
 # Application definition
