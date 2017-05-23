@@ -1,21 +1,13 @@
 import os
-import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-env = environ.Env(
-        DEBUG=(bool, False),
-    )
-environ.Env.read_env()
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '=w@ualtox7^w203!+^inc*f8z+#e3*2zs7%vjv4qw0rqc$yy@0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = True
 
 ALLOWED_HOSTS = [
     u'auxbox-backend.herokuapp.com',
