@@ -1,6 +1,10 @@
 # Compiled
 *.pyc
 
+# Static files
+/static/
+
+# Database
 *.sqlite3
 
 # Virtual Environment
