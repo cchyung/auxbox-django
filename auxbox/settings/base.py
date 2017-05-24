@@ -7,11 +7,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '=w@ualtox7^w203!+^inc*f8z+#e3*2zs7%vjv4qw0rqc$yy@0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     u'auxbox-backend.herokuapp.com',
-    u'localhost'
 ]
 
 # Application definition
@@ -91,7 +90,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'MST'
 
 USE_I18N = True
 
