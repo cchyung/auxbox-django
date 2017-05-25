@@ -1,14 +1,21 @@
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# from rest_framework import status
-# from rest_framework.decorators import api_view
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
 # from api.serializers import UserSerializer, SessionSerializer, SongSerializer
-# from django.http import Http404, HttpResponse
-# from rest_framework import generics
+from django.http import Http404, HttpResponse
+from rest_framework import generics
 # from api.models import User, Session, Song
-# from rest_framework import permissions
-#
-#
+from rest_framework import permissions
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'response': 'Hello World!'
+    })
+
+
 # class UserList(generics.ListCreateAPIView):
 #
 # 	queryset = User.objects.all()

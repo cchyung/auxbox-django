@@ -15,7 +15,6 @@ import uuid
 # 	name = models.CharField(max_length=50)
 # 	owner = models.ForeignKey('api.User', help_text='Linked User', default=None) #Users can have multiple Sessions
 #
-#
 # 	def __str__(self):
 # 		return str(self.name)
 #
