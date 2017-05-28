@@ -2,10 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-# from api.serializers import UserSerializer, SessionSerializer, SongSerializer
+from api.serializers import SessionSerializer, TrackSerializer
 from django.http import Http404, HttpResponse
 from rest_framework import generics
-# from api.models import User, Session, Song
+from api.models import Session, Track
+from django.contrib.auth.models import User
 from rest_framework import permissions
 
 
@@ -14,6 +15,11 @@ def api_root(request, format=None):
     return Response({
         'response': 'Hello World!'
     })
+
+class SessionList(generics.ListAPIView):
+    queryset = Session.objects.all()
+    serializer_class = SessionSerializer
+
 
 
 # class UserList(generics.ListCreateAPIView):

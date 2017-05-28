@@ -9,3 +9,6 @@
 
 # Virtual Environment
 /venv/
+
+# Pycharm
+/.idea/
