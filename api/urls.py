@@ -23,9 +23,11 @@ session_detail = views.SessionViewSet.as_view({
     'delete': 'destroy'
 })
 
-track_list = views.TrackViewSet.as_view({
-    'get': 'list',
-    'post': 'create'
+track_detail = views.TrackViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
 })
 
 
@@ -33,7 +35,10 @@ urlpatterns = format_suffix_patterns([
     url(r'^users/$', user_list, name='user-list'),
     url(r'^users/(?P<pk>[0-9]+)/$', user_detail, name='user-detail'),
     url(r'^sessions/$', session_list, name='session-list'),
-    url(r'^tracks/', track_list, name='track-list'),
+    url(r'^sessions/(?P<uuid>[0-9a-f-]+)/$', session_detail, name='session-detail'),
+    url(r'^sessions/(?P<uuid>[0-9a-f-]+)/$', session_detail, name='session-detail'),
+    url(r'^tracks/(?P<uuid>[0-9a-f-]+)/$', track_detail, name='track-detail'),
+
 
     url(r'^$', views.api_root)
 

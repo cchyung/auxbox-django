@@ -22,7 +22,6 @@ def api_root(request, format=None):
     })
 
 
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -32,6 +31,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class SessionViewSet(viewsets.ModelViewSet):
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
+    lookup_field = 'uuid'
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -40,6 +40,7 @@ class SessionViewSet(viewsets.ModelViewSet):
 class TrackViewSet(viewsets.ModelViewSet):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
+    lookup_field = 'uuid'
 
 
 # class UserList(generics.ListCreateAPIView):
