@@ -25,7 +25,6 @@ class Session(models.Model):
 class Track(models.Model):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     session = models.ForeignKey('api.Session', related_name='tracks', help_text='Session')
-    title = models.CharField(max_length=50, help_text='Track Title', default='Default Track')
     track_id = models.CharField(max_length=20, help_text='Spotify Track ID', default='')
 
     def __str__(self):

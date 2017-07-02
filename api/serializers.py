@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
 class TrackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Track
-        fields = ('session', 'title', 'track_id')
+        fields = ('session', 'track_id')
 
 
 class SessionSerializer(serializers.HyperlinkedModelSerializer):
