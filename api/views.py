@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, detail_route
 from api.serializers import *
 from django.http import Http404, HttpResponse
 from rest_framework import generics
@@ -9,6 +9,7 @@ from api.models import Session, Track
 from django.contrib.auth.models import User
 from rest_framework import permissions
 from rest_framework.reverse import reverse
+import services
 
 
 # Root view for API
@@ -22,7 +23,7 @@ def api_root(request, format=None):
     })
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -36,6 +37,8 @@ class SessionViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+
+
 # Returns list of sessions
 class TrackViewSet(viewsets.ModelViewSet):
     queryset = Track.objects.all()
@@ -43,10 +46,15 @@ class TrackViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
 
-# class UserList(generics.ListCreateAPIView):
-#
-# 	queryset = User.objects.all()
-# 	serializer_class = UserSerializer
+class AddTrackByURLView(generics.CreateAPIView):
+    serializer_class = TrackSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(track_id=services.parse_track_id(self.request.data.get('url')))
+
+
+
+
 #
 # class SessionList(generics.ListCreateAPIView):
 # 	"""

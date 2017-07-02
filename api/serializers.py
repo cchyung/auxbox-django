@@ -4,6 +4,11 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='user-detail',
+        # lookup_field='uuid'
+    )
+
     sessions = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
@@ -13,13 +18,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'sessions')
+        fields = ('url', 'username', 'email', 'sessions')
 
 
 class TrackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Track
-        fields = ('session', 'title', 'url')
+        fields = ('session', 'title', 'track_id')
 
 
 class SessionSerializer(serializers.HyperlinkedModelSerializer):
@@ -28,11 +33,11 @@ class SessionSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True,
     )
 
-    session_url = serializers.HyperlinkedIdentityField(
+    url = serializers.HyperlinkedIdentityField(
         view_name='session-detail',
         lookup_field='uuid'
     )
 
     class Meta:
         model = Session
-        fields = ('session_url', 'owner', 'name', 'tracks',)
+        fields = ('url', 'owner', 'name', 'tracks',)
