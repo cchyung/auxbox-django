@@ -3,11 +3,11 @@ from django.conf.urls import url, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from api import views
 
-user_list = views.UserViewSet.as_view({
+user_list = views.ProfileViewSet.as_view({
     'get': 'list'
 })
 
-user_detail = views.UserViewSet.as_view({
+user_detail = views.ProfileViewSet.as_view({
     'get': 'retrieve'
 })
 
@@ -38,15 +38,13 @@ track_create_by_url = views.AddTrackByURLView.as_view()
 
 
 urlpatterns = format_suffix_patterns([
-    url(r'^users/$', user_list, name='user-list'),
-    url(r'^users/(?P<pk>[0-9]+)/$', user_detail, name='user-detail'),
+    url(r'^profiles/$', user_list, name='profile-list'),
+    url(r'^profiles/(?P<pk>[0-9]+)/$', user_detail, name='profile-detail'),
     url(r'^sessions/$', session_list, name='session-list'),
     url(r'^sessions/(?P<uuid>[0-9a-f-]+)/$', session_detail, name='session-detail'),
     url(r'^tracks/add/$', track_create, name='track-create'),
     url(r'^tracks/add_by_url/$', track_create_by_url, name='track-create-by-url'),
-
     url(r'^tracks/(?P<uuid>[0-9a-f-]+)/$', track_detail, name='track-detail'),
-
     url(r'^$', views.api_root)
 
 ])

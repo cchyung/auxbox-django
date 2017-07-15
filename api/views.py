@@ -18,13 +18,17 @@ import services
 def api_root(request, format=None):
     return Response({
         'message': 'Welcome to the AuxBox API!',
-        'users': reverse('user-list', request=request, format=format),
+        'users': reverse('profile-list', request=request, format=format),
         'sessions': reverse('session-list', request=request, format=format)
     })
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+class UserSignUp(generics.CreateAPIView):
     serializer_class = UserSerializer
 
 
@@ -33,10 +37,6 @@ class SessionViewSet(viewsets.ModelViewSet):
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
     lookup_field = 'uuid'
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
 
 
 # Returns list of sessions
