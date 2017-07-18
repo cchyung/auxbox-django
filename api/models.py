@@ -13,6 +13,13 @@ class Profile(models.Model):
         return self.user.username
 
 
+class Anon(models.Model):
+    phone = models.CharField(max_length=25)
+    added_date = models.DateTimeField()  #Used to remove old anon users to clean the table
+    def __str__(self):
+        return self.user.username
+
+
 class Session(models.Model):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     owner = models.ForeignKey('Profile', related_name='sessions', help_text='Owner', default=None)

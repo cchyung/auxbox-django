@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Track, Session, Profile
+from api.models import Track, Session, Profile, Anon
 from django.contrib.auth.models import User
 
 
@@ -15,6 +15,13 @@ class UserSerializer(serializers.ModelSerializer):
         profile = Profile(user=self.instance)
         profile.save()
         return user
+
+class AnonSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Anon 
+        fields = ('user, added_date')
+
 
 
 class ProfileSerializer(serializers.ModelSerializer):
