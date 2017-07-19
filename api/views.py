@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from rest_framework import permissions
 from rest_framework.reverse import reverse
 import services
+from datetime import datetime, timedelta
 
 
 # Root view for API
@@ -32,10 +33,20 @@ class UserSignUp(generics.CreateAPIView):
     serializer_class = UserSerializer
 
 
-#returns list of Anonymous users
-class AnonViewSet(viewsets.ReadOnlyModelViewSet):
+class AnonView(generics.CreateAPIView):
     queryset = Anon.objects.all()
     serializer_class = AnonSerializer
+
+    def post(self, request, format=None):
+        serializer = AnonSerializer(data=request.data)
+        date_threshold = datetime.now() - timedelta(days = 30)
+        old = Anon.objects.filter(created_lt = date_threshold)
+        old.delete()
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Returns list of sessions
 class SessionViewSet(viewsets.ModelViewSet):

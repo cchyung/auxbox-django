@@ -23,7 +23,6 @@ class AnonSerializer(serializers.ModelSerializer):
         fields = ('user, added_date')
 
 
-
 class ProfileSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='profile-detail',
