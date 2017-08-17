@@ -7,8 +7,10 @@ from django.http import Http404, HttpResponse
 from rest_framework import generics
 from api.models import Session, Track
 from django.contrib.auth.models import User
+from spotipy.oauth2 import SpotifyOAuth
 from rest_framework import permissions
 from rest_framework.reverse import reverse
+import os
 import services
 
 
@@ -28,8 +30,49 @@ class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProfileSerializer
 
 
+# Signup flow:
+# 1. Front end gets authorization code from spotify
+# 2. Front end hits callback endpoint which uses the auth. code to get access/refresh tokens
+# 3. Logic to check if email has already been registered before
+# 3.1 If not: create a user
+# 4. Front end says "Great, we just need a little bit more information from you, asks for email and password"
+# 6. Goes to sign up function, passes in email and password along with spotify tokens
+#
+# Note: Spotify access token is stored both locally and on the API, if the token is expired, the API will take care of
+# updating with the refresh token and passing back the new spotify access token to the front end.
+# Use: https://spotipy.readthedocs.io/en/latest/#module-spotipy.oauth2 see SpotifyOAuth Object for taking auth code
+
+@api_view(http_method_names=['GET'])
+def oauth2_callback(request):
+    # Get auth code or error
+    authorization_code = request.GET.get('code')
+    error = request.GET.get('error')
+
+    if (authorization_code):  # Success!
+        # Get access/refresh token with authorization code
+        oauth_tool = SpotifyOAuth(
+            os.environ['SPOTIFY_CLIENT_ID'],
+            os.environ['SPOTIFY_SECRET_KEY'],
+            # reverse('api:oauth2-callback')
+            'http://localhost:8000/api/oauth2/callback'
+        )
+
+        access_info = oauth_tool.get_access_token(authorization_code)
+        return Response(access_info)
+
+    else:  # Failure (User denied authorization request or other error)
+        return Response({
+            "error": error,
+            "message": "Error with authentication"
+        })
+
+
 class UserSignUp(generics.CreateAPIView):
+    queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    # def create(self, request, *args, **kwargs):
+
 
 
 # Returns list of sessions
