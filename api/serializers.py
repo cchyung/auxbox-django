@@ -4,21 +4,9 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    spotify_access_token = serializers.CharField()
-    spotify_refresh_token = serializers.CharField()
-
     class Meta:
         model = User
-        fields = ('username', 'email', 'spotify_access_token', 'spotify_refresh_token')
-
-
-    def create(self, validated_data):
-        # Create profile with new user
-        user = User(**validated_data)
-        user.save()
-        profile = Profile(user=user) # Creates a coinciding profile
-        profile.save()
-        return user
+        fields = ('username', 'email')
 
 
 class ProfileSerializer(serializers.ModelSerializer):
