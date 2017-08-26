@@ -69,6 +69,13 @@ class AddTrackByURLView(generics.CreateAPIView):
         serializer.save(track_id=services.parse_track_id(self.request.data.get('url')))
 
 
+#view for twilio sms testing
+@csrf_exempt
+def sms(request):
+    twiml = '<Response><Message>Hello from your Django app!</Message></Response>'
+    return HttpResponse(twiml, content_type='text/xml')
+
+
 
 
 #

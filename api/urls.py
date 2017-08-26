@@ -45,6 +45,7 @@ urlpatterns = format_suffix_patterns([
     url(r'^tracks/add/$', track_create, name='track-create'),
     url(r'^tracks/add_by_url/$', track_create_by_url, name='track-create-by-url'),
     url(r'^tracks/(?P<uuid>[0-9a-f-]+)/$', track_detail, name='track-detail'),
+    url(r'^sms/$', 'api.views.sms'),
     url(r'^$', views.api_root)
 
 ])
