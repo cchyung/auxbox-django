@@ -1,8 +1,20 @@
 from __future__ import unicode_literals
 import uuid
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.template.defaultfilters import slugify
+
+
+class User(AbstractUser):
+    USERNAME_FIELD = 'email'
+    email = models.EmailField(unique=True)
+    REQUIRED_FIELDS = []
+    spotify_refresh_token = models.CharField(default='', max_length=100)
+    spotify_access_token = models.CharField(default='', max_length=100)
+
+    class Meta(AbstractUser.Meta):
+        swappable = 'AUTH_USER_MODEL'
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user')

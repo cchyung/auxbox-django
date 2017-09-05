@@ -5,8 +5,7 @@ from rest_framework.decorators import api_view, detail_route
 from api.serializers import *
 from django.http import Http404, HttpResponse
 from rest_framework import generics
-from api.models import Session, Track
-from django.contrib.auth.models import User
+from api.models import Session, Track, User
 from spotipy.oauth2 import SpotifyOAuth
 from rest_framework import permissions
 from rest_framework.reverse import reverse
