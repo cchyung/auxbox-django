@@ -105,6 +105,22 @@ def register(request):
     else:
         return Response({"error": "Information required to register is missing."})
 
+@api_view(http_method_names=['GET'])
+def refresh_token(request):
+    # Get post data
+    post_data = request.data
+    if post_data.get('spotify_refresh_token') is not None:
+        oauth_tool = SpotifyOAuth(
+            os.environ['SPOTIFY_CLIENT_ID'],
+            os.environ['SPOTIFY_SECRET_KEY'],
+            # reverse('api:oauth2-callback')
+            'http://localhost:8000/api/oauth2/callback'
+        )
+
+        token = post_data.get('spotify_refresh_token')
+        oauth_tool.refresh_access_token(token)
+    else:
+        return Response({"error": "Refresh token missing."})
 
 class UserSignUp(generics.CreateAPIView):
     queryset = User.objects.all()
