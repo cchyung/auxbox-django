@@ -55,7 +55,7 @@ def oauth2_callback(request):
             os.environ['SPOTIFY_CLIENT_ID'],
             os.environ['SPOTIFY_SECRET_KEY'],
             # reverse('api:oauth2-callback')
-            'http://localhost:8000/api/oauth2/callback'
+            'http://localhost:8000/api/oauth2/callback' # TODO update this to handle reverse
         )
 
         access_info = oauth_tool.get_access_token(authorization_code)
