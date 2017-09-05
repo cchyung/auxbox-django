@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.conf.urls import url, include
 from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework_jwt.views import obtain_jwt_token
 from api import views
 
 profile_list = views.ProfileViewSet.as_view({
@@ -38,6 +39,7 @@ track_create_by_url = views.AddTrackByURLView.as_view()
 
 
 urlpatterns = format_suffix_patterns([
+    url(r'^o/token', obtain_jwt_token),
     url(r'^oauth2/callback$', views.oauth2_callback, name='oauth2-callback'),
     url(r'^profiles/$', profile_list, name='profile-list'),
     url(r'^profiles/register$', views.register, name='user-register'),

@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
 
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user')
     spotify_refresh_token = models.CharField(default='', max_length=100)
