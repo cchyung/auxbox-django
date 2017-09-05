@@ -31,18 +31,7 @@ class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProfileSerializer
 
 
-# Signup flow:
-# 1. Front end gets authorization code from spotify
-# 2. Front end hits callback endpoint which uses the auth. code to get access/refresh tokens
-# 3. Logic to check if email has already been registered before
-# 3.1 If not: create a user
-# 4. Front end says "Great, we just need a little bit more information from you, asks for email and password"
-# 6. Goes to sign up function, passes in email and password along with spotify tokens
-#
-# Note: Spotify access token is stored both locally and on the API, if the token is expired, the API will take care of
-# updating with the refresh token and passing back the new spotify access token to the front end.
-# Use: https://spotipy.readthedocs.io/en/latest/#module-spotipy.oauth2 see SpotifyOAuth Object for taking auth code
-
+# OAuth Callback
 @api_view(http_method_names=['GET'])
 def oauth2_callback(request):
     # Get auth code or error
@@ -68,7 +57,7 @@ def oauth2_callback(request):
         })
 
 
-# Custom signup view
+# Register user
 @api_view(http_method_names=['POST'])
 def register(request):
     # Get post data
@@ -122,9 +111,11 @@ def refresh_token(request):
     else:
         return Response({"error": "Refresh token missing."})
 
+
 class UserSignUp(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
 
 # Returns list of sessions
 class SessionViewSet(viewsets.ModelViewSet):
@@ -145,43 +136,3 @@ class AddTrackByURLView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(track_id=services.parse_track_id(self.request.data.get('url')))
-
-
-
-
-#
-# class SessionList(generics.ListCreateAPIView):
-# 	"""
-# 	View to all the sessions in the database
-# 	"""
-#
-# 	queryset = Session.objects.all()
-# 	serializer_class = SessionSerializer
-#
-# class SessionDetail(APIView):
-#
-# 	queryset = Session.objects.all()
-# 	serializer_class = SessionSerializer
-# 	lookup_field = 'name'
-#
-#
-# 	def get(self, request, name, format=None):
-# 		"""
-# 		Gets single session
-# 		"""
-# 		session = self.get_object(name)
-# 		serializer = SessionSerializer(session)
-# 		return Response(serializer.data)
-#
-# 	# Gets all sessions owned by user
-#
-# 	def get_queryset(self, username):
-# 		"""
-# 		Gets sessions specified by user
-# 		"""
-# 		user = self.kwargs('user')
-# 		return Session.objects.filter(owner = User.objects.get(username=username))
-#
-# class SongList(generics.ListCreateAPIView):
-# 	queryset = Song.objects.all()
-# 	serializer_class = SongSerializer
