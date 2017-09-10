@@ -20,6 +20,7 @@ import json
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 import re
+from services import parse_track_id
 
 
 
@@ -114,9 +115,18 @@ def sms(request):
 
     # 'Join'
     if "join" in text.lower():
-        username = text.lower().split('join ', 1)[1]
-        msg = 'You just joined %s\'s session!  Text "Help" for more actions, uncluding how to add the song of your choice to this session!' % (username)
-        create_dict = {'phone': number, 'added_date': datetime.today(), 'joined_session': username}
+        session = text.lower().split()[-1]
+        print session
+        print "checking if session exists"
+        if Session.objects.filter(name = session):
+            print Session.objects.filter(name = session)
+            msg = 'You just joined the session "%s"!  Text "Help me" for more actions, including how to add the song of your choice to this session!' % (session)
+        else:
+            msg = 'Sorry, I coudln\'t find a session with that name.'
+            r.message(msg)
+            return r
+
+        create_dict = {'phone': number, 'added_date': datetime.today(), 'joined_session': session}
         try:
             #Deletes if number already exists in database linked with another session
             Anon.objects.filter(phone=number).delete()
@@ -129,14 +139,20 @@ def sms(request):
 
     # (Shares a song from Spotify)
     if bool(re.search('(Here.s a song for you. .*\nhttps:\/\/open.spotify.com\/track\/.*|https:\/\/open.spotify.com\/track\/.*)', text)):
-        
+
         msg = 'The song provided has been added to the session.  If you want to see the current song queue, just type "Session".'
         r.message(msg)
         return r
 
 
+    if 'help me' in text.lower():
+        msg = 'To join a session, simply message me \"join (session name)"! I\'ll look for this session, and add you to it. \n The easiest way to add a song is to find your favorite song on the Spotify app and share it via text to me!  The text should look something like "Here\'s a song for you...." for me to understand it.  \n To see the current session queue at any time, just text me "Sessions" and I\'ll show you the current queue!'
+        r.message(msg)
+        return r
+
+
     else:
-        r.message('I coudln\'t understand this request.  Text "help" for a list of available actions!')
+        r.message('I coudln\'t understand this request.  Text "Help me" for a list of available actions!')
         return r
 
 
