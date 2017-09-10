@@ -86,6 +86,7 @@ class AddTrackByURLView(generics.CreateAPIView):
         serializer.save(track_id=services.parse_track_id(self.request.data.get('url')))
 
 
+
 #view for twilio sms testing
 @twilio_view
 def sms(request):
@@ -93,25 +94,34 @@ def sms(request):
     Keywords:
 
     'Join (4 letter key? or single word+numbers or something)' - Joins the session.  Allows the phone to makre requests to add songs.
-    'STOP (or join another session)' - Terminates the current connection to the session
+    'Leave' (or join another session)' - Terminates the current connection to the session
     (User shares spotify share message) - Invalid when not in session, adds song to queue if in session.
-    'Session' - Displays the current songs in the session.  
+    'Session' - Displays the current song queue in the session.  
+
+    To-Do's
+        Add "Session" functionality to display song queue, need oath with spotify to get the song names
 
     """
     r = MessagingResponse()
     text = request.POST.get('Body', '')
     number = request.POST.get('From', '')
 
+    try:
+        #Attempting to get anon user
+        print "attempting to get anon user"
+        qset = Anon.objects.filter(phone = number)      
+        anon = next(iter(qset))
+        serializer = AnonSerializer(anon)
+        content = JSONRenderer().render(serializer.data)
+        anon_content = json.loads(content)
+        print anon_content["joined_session"] # Session of the current anon user
+        #Anon Data
+        curr_session = anon_content["joined_session"]
+    except:
+        #Anon Data
+        curr_session = None
 
-    #Attempting to get anon user
-    print "attempting to get anon user"
-    qset = Anon.objects.filter(phone = number)      
-    anon = next(iter(qset))
-    serializer = AnonSerializer(anon)
-    content = JSONRenderer().render(serializer.data)
-    anon_content = json.loads(content)
-    print anon_content["joined_session"] # Session of the current anon user
-
+# -------------------------------------------------------------------------------
 
     # 'Join'
     if "join" in text.lower():
@@ -120,7 +130,7 @@ def sms(request):
         print "checking if session exists"
         if Session.objects.filter(name = session):
             print Session.objects.filter(name = session)
-            msg = 'You just joined the session "%s"!  Text "Help me" for more actions, including how to add the song of your choice to this session!' % (session)
+            msg = 'You just joined the session "%s"!  Text "Help me" for more actions, including how to add the song of your choice to this session! \n \n To leave this session, just text "leave".' % (session)
         else:
             msg = 'Sorry, I coudln\'t find a session with that name.'
             r.message(msg)
@@ -137,20 +147,49 @@ def sms(request):
         r.message(msg)
         return r
 
-    # (Shares a song from Spotify)
-    if bool(re.search('(Here.s a song for you. .*\nhttps:\/\/open.spotify.com\/track\/.*|https:\/\/open.spotify.com\/track\/.*)', text)):
 
+# -------------------------------------------------------------------------------
+    # (Shares a song from Spotify)
+    # To-do's 
+        # Add functionality to read back the actual song name to the user by requesting it from spotify
+    if bool(re.search('(Here.s a song for you. .*\nhttps:\/\/open.spotify.com\/track\/.*|https:\/\/open.spotify.com\/track\/.*)', text)):
+        if not curr_session:
+            msg = 'It looks like you aren\'t part of a session yet! \n \n To join a session, simply message me \"join (session name)"! I\'ll look for this session, and add you to it.'
+            r.message(msg)
+            return r
+        url = text.split()[-1]
+        track = parse_track_id(url)
+        print track
         msg = 'The song provided has been added to the session.  If you want to see the current song queue, just type "Session".'
         r.message(msg)
         return r
 
 
-    if 'help me' in text.lower():
-        msg = 'To join a session, simply message me \"join (session name)"! I\'ll look for this session, and add you to it. \n The easiest way to add a song is to find your favorite song on the Spotify app and share it via text to me!  The text should look something like "Here\'s a song for you...." for me to understand it.  \n To see the current session queue at any time, just text me "Sessions" and I\'ll show you the current queue!'
+# -------------------------------------------------------------------------------
+    #Help Commant
+    if text.lower().split()[0] == "help" and text.lower().split()[1] == "me": 
+        msg = 'To join a session, simply message me \"join (session name)"! I\'ll look for this session, and add you to it. \n The easiest way to add a song is to find your favorite song on the Spotify app and share it via text to me!  The text should look something like "Here\'s a song for you...." for me to understand it. \n\n To see the current session queue at any time, just text me "Sessions" and I\'ll show you the current queue! \n\n To Make your own session and to upvote and downvote songs, download the AuxBox app from the IOS App Store!'
+        r.message(msg)
+        return r
+
+# -------------------------------------------------------------------------------
+    #Leave 
+    if text.lower() == 'leave':
+        msg = 'You have been removed from the session "%s"' % (curr_session)
+        try:
+            #Pseudo for removing an anon user from the session, just deletes them from the database lol
+            #This is totally fine though because it re-creates a database entry when number wants to join again
+            Anon.objects.filter(phone=number).delete()
+            print 'Deleted an entry.'
+        except:
+            pass
+
         r.message(msg)
         return r
 
 
+# -------------------------------------------------------------------------------
+    #Doesn't understand text
     else:
         r.message('I coudln\'t understand this request.  Text "Help me" for a list of available actions!')
         return r
