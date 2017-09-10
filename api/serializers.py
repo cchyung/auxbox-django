@@ -17,10 +17,9 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class AnonSerializer(serializers.ModelSerializer):
-
     class Meta:
-        model = Anon 
-        fields = ('user, added_date')
+        model = Anon
+        fields = '__all__'
 
 
 class ProfileSerializer(serializers.ModelSerializer):

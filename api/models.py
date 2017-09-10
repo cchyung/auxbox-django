@@ -16,8 +16,7 @@ class Profile(models.Model):
 class Anon(models.Model):
     phone = models.CharField(max_length=25)
     added_date = models.DateTimeField()  #Used to remove old anon users to clean the table
-    def __str__(self):
-        return self.user.username
+    joined_session = models.CharField(max_length=100)
 
 
 class Session(models.Model):

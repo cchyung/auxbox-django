@@ -11,6 +11,16 @@ from rest_framework import permissions
 from rest_framework.reverse import reverse
 import services
 from datetime import datetime, timedelta
+from django.views.decorators.csrf import csrf_exempt
+from twilio import twiml
+from django_twilio.decorators import twilio_view
+from twilio.twiml.messaging_response import MessagingResponse
+from datetime import datetime
+import json
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+import re
+
 
 
 # Root view for API
@@ -33,20 +43,26 @@ class UserSignUp(generics.CreateAPIView):
     serializer_class = UserSerializer
 
 
-class AnonView(generics.CreateAPIView):
+# class AnonView(generics.CreateAPIView):
+#     queryset = Anon.objects.all()
+#     serializer_class = AnonSerializer
+
+#     def post(self, request, format=None):
+#         serializer = AnonSerializer(data=request.data)
+#         date_threshold = datetime.now() - timedelta(days = 30)
+#         old = Anon.objects.filter(created_lt = date_threshold)
+#         old.delete()
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# Returns list of Annonymous users
+class AnonViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Anon.objects.all()
     serializer_class = AnonSerializer
-
-    def post(self, request, format=None):
-        serializer = AnonSerializer(data=request.data)
-        date_threshold = datetime.now() - timedelta(days = 30)
-        old = Anon.objects.filter(created_lt = date_threshold)
-        old.delete()
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 # Returns list of sessions
 class SessionViewSet(viewsets.ModelViewSet):
@@ -70,12 +86,63 @@ class AddTrackByURLView(generics.CreateAPIView):
 
 
 #view for twilio sms testing
-@csrf_exempt
+@twilio_view
 def sms(request):
-    twiml = '<Response><Message>Hello from your Django app!</Message></Response>'
-    return HttpResponse(twiml, content_type='text/xml')
+    """
+    Keywords:
+
+    'Join (4 letter key? or single word+numbers or something)' - Joins the session.  Allows the phone to makre requests to add songs.
+    'STOP (or join another session)' - Terminates the current connection to the session
+    (User shares spotify share message) - Invalid when not in session, adds song to queue if in session.
+    'Session' - Displays the current songs in the session.  
+
+    """
+    r = MessagingResponse()
+    text = request.POST.get('Body', '')
+    number = request.POST.get('From', '')
 
 
+    #Attempting to get anon user
+    print "attempting to get anon user"
+    qset = Anon.objects.filter(phone = number)      
+    anon = next(iter(qset))
+    serializer = AnonSerializer(anon)
+    content = JSONRenderer().render(serializer.data)
+    anon_content = json.loads(content)
+    print anon_content["joined_session"] # Session of the current anon user
+
+
+    # 'Join'
+    if "join" in text.lower():
+        username = text.lower().split('join ', 1)[1]
+        msg = 'You just joined %s\'s session!  Text "Help" for more actions, uncluding how to add the song of your choice to this session!' % (username)
+        create_dict = {'phone': number, 'added_date': datetime.today(), 'joined_session': username}
+        try:
+            #Deletes if number already exists in database linked with another session
+            Anon.objects.filter(phone=number).delete()
+            print 'Deleted an entry.'
+        except:
+            pass
+        Anon.objects.create(**create_dict)
+        r.message(msg)
+        return r
+
+    # (Shares a song from Spotify)
+    if bool(re.search('(Here.s a song for you. .*\nhttps:\/\/open.spotify.com\/track\/.*|https:\/\/open.spotify.com\/track\/.*)', text)):
+        
+        msg = 'The song provided has been added to the session.  If you want to see the current song queue, just type "Session".'
+        r.message(msg)
+        return r
+
+
+    else:
+        r.message('I coudln\'t understand this request.  Text "help" for a list of available actions!')
+        return r
+
+
+
+
+#session = Session.objects.filter(name = anon_content["joined_session"])
 
 
 #

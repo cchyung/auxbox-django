@@ -1,14 +1,17 @@
 from auxbox.settings.base import *
 
+
 DEBUG = True
 
 INSTALLED_APPS += [
-    'django_extensions'
+    'django_extensions',
+    'django_twilio',
 ]
 
 ALLOWED_HOSTS += [
-    u'localhost',
+    '*'
 ]
+
 
 
 # Database
