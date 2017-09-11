@@ -174,7 +174,7 @@ def sms(request):
 
 # -------------------------------------------------------------------------------
     #Leave 
-    if text.lower() == 'leave':
+    if text.lower().split()[-1] == 'leave':
         msg = 'You have been removed from the session "%s"' % (curr_session)
         try:
             #Pseudo for removing an anon user from the session, just deletes them from the database lol
