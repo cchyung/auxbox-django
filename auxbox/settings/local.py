@@ -5,7 +5,6 @@ DEBUG = True
 
 INSTALLED_APPS += [
     'django_extensions',
-    'django_twilio',
 ]
 
 ALLOWED_HOSTS += [
