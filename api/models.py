@@ -54,6 +54,12 @@ class User(AbstractUser):
         swappable = 'AUTH_USER_MODEL'
 
 
+class Anon(models.Model):
+    phone = models.CharField(max_length=25)
+    added_date = models.DateTimeField()  #Used to remove old anon users to clean the table
+    joined_session = models.CharField(max_length=100)
+
+
 class Session(models.Model):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     owner = models.ForeignKey('api.User', related_name='sessions', help_text='Owner', default=None)

@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from api.models import Track, Session, User
+from api.models import *
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,6 +12,11 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+class AnonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Anon
+        fields = '__all__'
 
 
 class UserDetailSerializer(serializers.ModelSerializer):

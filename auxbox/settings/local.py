@@ -1,14 +1,17 @@
 from auxbox.settings.base import *
 
+
 DEBUG = True
 
 INSTALLED_APPS += [
-    'django_extensions'
+    'django_extensions',
+    'django_twilio',
 ]
 
 ALLOWED_HOSTS += [
-    u'localhost',
+    '*'
 ]
+
 
 
 # Database
@@ -18,8 +21,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'auxbox_dev',
-        'USER': 'conner',
-        'PASSWORD': 'developer',
+        'USER': 'Drew',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '5432'
     }
