@@ -4,14 +4,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_jwt.views import obtain_jwt_token
 from api import views
 
-profile_list = views.ProfileViewSet.as_view({
-    'get': 'list'
-})
-
-profile_detail = views.ProfileViewSet.as_view({
-    'get': 'retrieve'
-})
-
 session_list = views.SessionViewSet.as_view({
     'get': 'list',
     'post': 'create'
@@ -40,10 +32,9 @@ track_create_by_url = views.AddTrackByURLView.as_view()
 
 urlpatterns = format_suffix_patterns([
     url(r'^o/token', obtain_jwt_token),
+    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view(), name='user-detail'),
     url(r'^oauth2/callback$', views.oauth2_callback, name='oauth2-callback'),
-    url(r'^profiles/$', profile_list, name='profile-list'),
-    url(r'^profiles/register$', views.register, name='user-register'),
-    url(r'^profiles/(?P<pk>[0-9]+)/$', profile_detail, name='profile-detail'),
+    url(r'^users/register$', views.RegisterUser.as_view(), name='user-register'),
     url(r'^sessions/$', session_list, name='session-list'),
     url(r'^sessions/(?P<uuid>[0-9a-f-]+)/$', session_detail, name='session-detail'),
     url(r'^tracks/add/$', track_create, name='track-create'),

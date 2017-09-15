@@ -1,32 +1,29 @@
 from rest_framework import serializers
-from api.models import Track, Session, Profile
-from django.contrib.auth.models import User
-
+from api.models import Track, Session, User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'email')
+        fields = ('email', 'password')
+
+    def create(self, validated_data):
+        user = User.objects.create(email=validated_data['email'])
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name='profile-detail',
-        # lookup_field='uuid'
-    )
-
+class UserDetailSerializer(serializers.ModelSerializer):
     sessions = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
         view_name='session-detail',
-        lookup_field='uuid'
+        lookup_field='uuid',
+        many=True,
+        read_only=True
     )
-
-    user = UserSerializer()
 
     class Meta:
-        model = Profile
-        fields = ('url', 'user', 'sessions', 'spotify_access_token', 'spotify_refresh_token')
+        model = User
+        fields = ('email', 'sessions')
 
 
 class TrackSerializer(serializers.ModelSerializer):

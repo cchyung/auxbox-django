@@ -70,6 +70,8 @@ WSGI_APPLICATION = 'auxbox.wsgi.application'
 
 
 AUTH_USER_MODEL = 'api.User'
+AUTHENTICATION_BACKENDS = ['api.backends.EmailBackend']
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -119,3 +121,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     )
 }
+
+JWT_AUTH = {
+    'JWT_VERIFY_EXPIRATION': False,
+}
+
