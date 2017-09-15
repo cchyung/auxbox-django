@@ -36,6 +36,12 @@ dnet==1.12
 dpath==1.4.0
 enum34==1.1.6
 google-api-python-client==1.6.2
+django-cors-middleware==1.3.1
+django-extensions==1.7.9
+django-filter==1.0.2
+django-oauth-toolkit==1.0.0
+djangorestframework==3.6.2
+djangorestframework-jwt==1.11.0
 gunicorn==19.7.1
 httpie==0.9.3
 httplib2==0.10.3
@@ -105,6 +111,8 @@ pyobjc-framework-WebKit==2.5.1
 pyOpenSSL==17.2.0
 pyparsing==2.0.1
 python-dateutil==1.5
+PyJWT==1.5.2
+pyparsing==2.2.0
 pytz==2017.2
 queuelib==1.4.2
 requests==2.18.4
