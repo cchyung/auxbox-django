@@ -15,7 +15,7 @@ import services
 from datetime import datetime, timedelta
 from django.views.decorators.csrf import csrf_exempt
 from twilio import twiml
-from django_twilio.decorators import twilio_view
+from django_twilio2.decorators import twilio_view
 from twilio.twiml.messaging_response import MessagingResponse
 from datetime import datetime
 import json
