@@ -4,10 +4,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_jwt.views import obtain_jwt_token
 from api import views
 
-user_list = views.ProfileViewSet.as_view({
-    'get': 'list'
-})
-
 anon_list = views.AnonViewSet.as_view({
     'get': 'list'
 })
