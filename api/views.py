@@ -283,4 +283,3 @@ def sms(request):
 # class SongList(generics.ListCreateAPIView):
 # 	queryset = Song.objects.all()
 # 	serializer_class = SongSerializer
->>>>>>> Sms
