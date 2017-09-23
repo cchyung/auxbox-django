@@ -8,10 +8,6 @@ anon_list = views.AnonViewSet.as_view({
     'get': 'list'
 })
 
-user_detail = views.ProfileViewSet.as_view({
-    'get': 'retrieve'
-})
-
 session_list = views.SessionViewSet.as_view({
     'get': 'list',
     'post': 'create'
