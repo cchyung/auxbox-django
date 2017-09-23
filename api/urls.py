@@ -8,7 +8,6 @@ anon_list = views.AnonViewSet.as_view({
     'get': 'list'
 })
 
-
 session_list = views.SessionViewSet.as_view({
     'get': 'list',
     'post': 'create'

@@ -20,8 +20,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'auxbox_dev',
-        'USER': 'Drew',
-        'PASSWORD': '',
+        'USER': os.environ.get('DATABASE_USER', ''),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
         'HOST': 'localhost',
         'PORT': '5432'
     }
