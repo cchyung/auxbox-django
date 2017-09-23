@@ -11,9 +11,6 @@
 /venv/
 /vaux/
 
-# Settings
-settings/local.py
-
 # Pycharm
 /.idea/
 
