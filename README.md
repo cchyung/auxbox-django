@@ -1,6 +1,6 @@
 # auxbox
 ## Description
-A virtual jukebox.
+A project for a virtual jukebox that allows users to submit requests to queue, and vote on other people's requests.  Perfect for a party, a roadtrip with friends, or a restaurant trying to allow for customer requests.
 
 # Setting up the Developer environment
 1. Install virtualenv
